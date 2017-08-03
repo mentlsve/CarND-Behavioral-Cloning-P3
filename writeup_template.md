@@ -57,9 +57,9 @@ The `model.py` file contains two methods:
   * gets the model using `get_model()`
   * sets up the generators. I have one generator for training data and one generator for validation data. They operate on disjunct subsets of the whole dataset.
   * configures the learning process 
-  ````
-  model.compile(optimizer=Adam(1e-3), loss="mse")
-  ```
+    ```
+    model.compile(optimizer=Adam(1e-3), loss="mse")
+    ```
 
     # SETUP
     metadata = dg.read_dataset_metadata( "./data/driving_log.csv")
