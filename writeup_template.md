@@ -51,39 +51,36 @@ python drive.py model.h5
 The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
 
 The `model.py` file contains two methods:
-* `get_model()` which returns a Keras Sequential model. The model is described in detail in the section about the [appropriate model architecture](#1.-an-appropriate-model-architecture-has-been-employed)
+* `get_model()` which returns a Keras Sequential model. The model is described in detail in the section about the [appropriate model architecture](#1-an-appropriate-model-architecture-has-been-employed)
 * `main()` which 
   * loads the metadata. That is the `./data/driving_log.csv` which contains information about the image names and the corresponding steering values. Note that I removed the header row from `./data/driving_log.csv` to make iterating straight forward.
+    ```
+    metadata = dg.read_dataset_metadata( "./data/driving_log.csv")
+    ```
   * gets the model using `get_model()`
   * sets up the generators. I have one generator for training data and one generator for validation data. They operate on disjunct subsets of the whole dataset.
+    ```
+    train_lines, val_lines = train_test_split(metadata, test_size=0.2)
+    train_gen = dg.generator(train_lines, batch_size=128)
+    valid_gen = dg.generator(val_lines, batch_size=128)
+    ```
   * configures the learning process 
     ```
     model.compile(optimizer=Adam(1e-3), loss="mse")
     ```
-
-    # SETUP
-    metadata = dg.read_dataset_metadata( "./data/driving_log.csv")
-    model = get_model()
-    model.summary()
-
-    # generators for training and validation
-    train_lines, val_lines = train_test_split(metadata, test_size=0.2)
-    train_gen = dg.generator(train_lines, batch_size=128)
-    valid_gen = dg.generator(val_lines, batch_size=128)
-    model.compile(optimizer=Adam(1e-3), loss="mse")
-
-    # TRAINING
-    # Fits the model on data generated batch-by-batch by a Python generator. 
+  * fits the model on data generated batch-by-batch 
+    ```  
     history = model.fit_generator(train_gen,
                                 samples_per_epoch=20480,
                                 nb_epoch=6,
                                 validation_data=valid_gen,
                                 nb_val_samples=4096,
                                 verbose=1)
-
-    # save model
+    ```
+  * saves the model, so it can be downloaded and used for generating steering angles in the autonomous mode of the simulator 
+    ```  
     model.save('model.h5')
-
+    ```
 ### Model Architecture and Training Strategy
 
 #### 1. An appropriate model architecture has been employed
