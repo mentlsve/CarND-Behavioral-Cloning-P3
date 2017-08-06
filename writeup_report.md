@@ -108,7 +108,10 @@ The `model.py` file contains two methods:
     ```
 ### Model Architecture and Training Strategy
 
-#### 1. An appropriate model architecture has been employed
+_Answering rubric points:_ 
+* _Has an appropriate model architecture been employed for the task?_
+* _Is the model architecture documented?_
+* _Is the solution design documented?_
 
 My model is heavily inspired by the paper ["End to End Learning for Self-Driving Cars" by Nvidia engineers](https://arxiv.org/pdf/1604.07316.pdf).
 
@@ -116,7 +119,7 @@ The network consists of:
 * a `Cropping2D layer` to remove 70 pixels from the top, 25 pixels from the bottom, and 1 pixel from the left and right. After this step 
 the images have a shape of 65 x 318 (height x width)
 * a `Lambda layer` to normalize the input so that they have zero mean and unit variance
-* 5 `convolutional layers`, with `relu` for non-linearities `batch normalization` after every `convolutional layer` and the following characteristics shape of the convolutional layers:
+* 5 `convolutional layers` followd by `relu` for non-linearity and `batch normalization`. The convolutional layers have the following properties.
 
   | |Filter size|Stride| Output shape|
   |-|-----------|------|-------------|
@@ -125,99 +128,33 @@ the images have a shape of 65 x 318 (height x width)
   |Conv3|5x5|x=2, y=2|height=5, width=37, depth=48|
   |Conv4|3x3|x=1, y=1|height=3, width=35, depth=64|
   |Conv5|3x3|x=1, y=1|height=1, width=33, depth=64|
-
 * 4 `fully connected` layers with
-  * output shape 1164
-  * output shape 100
-  * output shape 50
+  * output shape 1164 (followed by dropout to reduce overfitting)
+  * output shape 100 (followed by dropout to reduce overfitting)
+  * output shape 50 (followed by dropout to reduce overfitting)
   * output shape 10
 * the `output layer`
 
-#### 2. Attempts to reduce overfitting in the model
+#### Attempts to reduce overfitting in the model
 
-The model contains dropout layers after the first 3 fully connected layers.
+_Answering rubric points:_ 
+* _Has an attempt been made to reduce overfitting of the model?_
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model contains dropout layers after the first 3 fully connected layers. The model was trained and validated on different data sets to ensure that the model was not overfitting. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track. Batch normalization also seems to be helpful to reduce overfitting as stated in [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/pdf/1502.03167.pdf), although it is not its primary benefit (which is speedup of training):
+_"When training with Batch Normalization, a training example is seen in conjunction with other examples in the mini-batch, and the training network no longer producing deterministic values for a given training example. In our experiments, we found this effect to be advantageous to the generalization of the network."_
 
-#### 3. Model parameter tuning
+#### Hyperparamter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+_Answering rubric points:_ 
+* _Have the model parameters been tuned appropriately?_
 
-The model uses an `Adam` optimizer with the default parameters and `mean_squared_error` as a loss function (model.py line 84).
+The model uses an `Adam` optimizer with the default parameters and `mean_squared_error` as a loss function (model.py line 84). 
 
 ```
 model.compile(optimizer=Adam(1e-3), loss="mse")
 ```
 
-####4. Appropriate training data
-
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
-
-For details about how I created the training data, see the next section. 
-
-###Model Architecture and Training Strategy
-
-####1. Solution Design Approach
-
-The overall strategy for deriving a model architecture was to ...
-
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
-
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
-
-To combat the overfitting, I modified the model so that ...
-
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
-
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
-
-####2. Final Model Architecture
-
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
-
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
-
-####3. Creation of the Training Set & Training Process
-
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
-
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
-
-Architecture and Training Documentation
-
-
-history = model.fit_generator(train_gen,
-                                samples_per_epoch=20480,
-                                nb_epoch=6,
-                                validation_data=valid_gen,
-                                nb_val_samples=4096,
-                                verbose=1)
+The `Adam` optimizer adaptes the learning rate automatically, so there is no need to tune this parameter. 
 
 #### Training data
 
@@ -258,6 +195,19 @@ This above steps happen in the generator and outside the model. In the model its
 
 _Answering rubric points:_ 
 * _Is the training process documented?_
+
+The model is trained on data generated batch-by-batch by a Python generator. In every epoch the model is fitted on 20480 samples and validated on 4096 samples (1/5 of the training set).
+
+``` 
+history = model.fit_generator(train_gen,
+                                samples_per_epoch=20480,
+                                nb_epoch=6,
+                                validation_data=valid_gen,
+                                nb_val_samples=4096,
+                                verbose=1)
+``` 
+
+I started with 4 epochs and then tried my model in the simulator. Because it did not work good enough I increased the number of epochs and with 6 epochs no tire is leaving the drivable portion of the track surface anymore.
 
 ```
 20480/20480 [==============================] - 56s - loss: 0.4012 - val_loss: 0.0758
