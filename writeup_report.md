@@ -17,14 +17,15 @@ The goals / steps of this project are the following:
 [image4]: ./examples/placeholder_small.png "Recovery Image"
 [image5]: ./examples/placeholder_small.png "Recovery Image"
 [image6]: ./examples/placeholder_small.png "Normal Image"
-[udacity-data-set]: ./udacity_data_set.png "Udacity data set"
-[generated-data-distribution]: ./data_distribution.png "Data distribution from generator"
+[udacity-data-set]: ./writeup_iamges/udacity_data_set.png "Udacity data set"
+[generated-data-distribution]: ./writeup_iamges/data_distribution.png "Data distribution from generator"
 [center]: ./writeup_images/center_2016_12_01_13_30_48_287.jpg "Center"
 [right]: ./writeup_images/right_2016_12_01_13_39_31_979.jpg "Cropped"
 [cropped]: ./writeup_images/center_2016_12_01_13_30_48_287_cropped.jpg "Cropped"
 [flipped]: ./writeup_images/right_2016_12_01_13_39_31_979_flipped.jpg "Flipped"
 [yuv]: ./writeup_images/yuv.jpg "YUV"
 [rgb]: ./writeup_images/rgb.jpg "RGB"
+[cropped_portion]: ./writeup_images/cropped_portion.jpg "cropped_portion"
 
 
 ## Rubric Points
@@ -227,13 +228,8 @@ In the generator the color space is also changed from RGB to YUV. This has been 
 
 In the above visualisation the two chrominance components U and V seem to separate on-track and off-track quite good, so I would guess this is the reason why this is a more suitable color space to train on.
 
-This above steps happen in the generator and outside the model. In the model itself the image additionally gets normalized and cropped. 
-
-Original image
-![alt text][center]
-
-Cropped portion which is fed to the first convolutional layer (after normalization)
-![alt text][cropped]
+This above steps happen in the generator and outside the model. In the model itself the image additionally gets normalized and cropped. The cropped portion is then fed to the first convolutional layer (after normalization)
+![cropped_portion][cropped_portion]
 
 #### Training process
 
